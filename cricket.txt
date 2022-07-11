@@ -1,36 +1,3 @@
-Blog - Wordpress
-
-About me
-
-Articles
-
--> IPL
--> Indian Cricket Team
--> Fantasy
-
-Dose of Indian cricket
-
--> Weekly wrap ups of bilteral t20is of India ( SA / England / WI / Asia cup / Aus)
--> What went wrong with India in 2021 t20 wc
--> What's different under Dravid-Rohit - a deep dive into selections
-
-IPL
-
--> Decoding CSK
--> MI 2020 - the best ever t20 team constructed?
--> Mega auction - A dive into the strategy of different sides ( 4 parts ) 
--> How did Gujarat Titans punch above their weights?
-
-Fantasy articles
-
--> How does Fantasy work?
--> What are some unbelievable tips to crack fantasy?
-
-
-Cricket API link
-
-Contact me
-
 Cricket API : Streamlit
 
 About
