@@ -9,8 +9,8 @@ Stats that matter
 -> How much your team wins the toss + percentage of your team winning when they win toss
 -> Find the strength of your opposition
 
--> Batter bowler stats in venues (together stats + split by 1st/ 2nd innings)
--> Batter bowler stats vs opposition (together stats + split by 1st/ 2nd innings)
+-> Batter - bowler stats in venues (together stats + split by 1st/ 2nd innings)
+-> Batter - bowler stats vs opposition (together stats + split by 1st/ 2nd innings)
 
 -> Batter vs bowler (together stats + split by 1st/ 2nd innings + different phases)
 
