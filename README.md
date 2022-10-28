@@ -56,6 +56,10 @@ One of the most important factors to consider is the toss, especially in a t20 g
 
 #### PLAYER VS TEAM STATS
 
+- How well a player plays against an opposition also depends on how well he plays the main bowlers of the attack/ how well he bowls to the top batters of the team
+- This might be similarv to player vs opposition, but due to the mega auction in 2022 and the addition of 2 new teams, bowling and batting core has changed.
+- Just give the name of the batter and the bowler with the opposition, stats like average, strike rate, boundary percentage will be printed for batters vs each of their team's bowlers and stats like average strike rate, economy will be calculated for bowlers vs each of their team's batters.
+
 
 ## FEATURES TO BE DONE
 
