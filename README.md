@@ -43,10 +43,16 @@ One of the most important factors to consider is the toss, especially in a t20 g
 - Find the strength of your opposition. Are they a SRH or a GT
 
 #### PLAYER IN GROUND STATS
-
+- Batters and bowlers like certain venues and dont like certain venues. 
+- Rohit Sharma loves Eden Gardens, Shubman Gill hates Wankhade
+- This depends on how the conditions suit their style of play
+- Just give the name of the batter and the bowler with the venue, stats like average, strike rate, boundary percentage will be printed for batters and stats like average strike rate, economy will be calculated for bowlers.
 
 #### PLAYER VS OPPOSITION STATS
 
+- Similar to grounds, players also have favorite oppositions.
+- David Warner loves KKR, Tewatia loves Punjab Kings
+- Just give the name of the batter and the bowler with the opposition, stats like average, strike rate, boundary percentage will be printed for batters and stats like average strike rate, economy will be calculated for bowlers.
 
 #### PLAYER VS TEAM STATS
 
