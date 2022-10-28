@@ -15,7 +15,32 @@ The project aims to develop a fantasy helper application – to provide stats of
 
 ## FEATURES
 
+For selecting the right team on fantasy applications, a lot of factors need to be considered, including toss, combination of both teams, stats of players and of course a little bit of luck to go your way. The 11 members chosen must maximize your profits, minimize risks and also be a little different from every other team picked by others. In this API, we have configured a few features that would help you make an informed decision about picking the team.
+
 #### TOSS
+
+One of the most important factors to consider is the toss, especially in a t20 game in Asia were dew plays a massive role. We use the match data for all seasons in the IPL from 2008 to 2022 and calculate a few important stats that need to be considered to decide the balance of your side (6-5/ 7-4 skewing towrads the chasing / defending team)
+
+###### TOSS VS VENUES
+- Is the toss that important in T20 games, does chasing have a significant advantage.
+- Find out toss outcomes and game outcomes in specific venues - Just click the drop down list box and choose the stadium
+- You will find the what the majority of teams winning the toss here have chosen to do. 
+- You will also see the percentage of matches won by the team that won the toss
+
+###### TOSS VS SEASON
+- 2021 IPL had a massive skew to chasing because of the slow surfaces used in UAE.
+- Surfaces change across seasons and therefore it is important to understand the trends of the current season
+- Find out the trends of the ongoing season of IPL - bat first / bowl first
+
+###### TOSS VS YOUR TEAM
+- Few captains win more tosses than the others which gives a massive advantage while playing in Asia
+- For this reason, knowing the match win percentage while your teams win the toss proves to be an important factor
+- Find out if your team wins if they win the toss. Also, find out how much your team wins the toss.
+
+###### TOSS VS OPPOSITION
+- SRH love defending, GT love chasing
+- Knowing your opposition's strength is valuable to decide the balance of your side
+- Find the strength of your opposition. Are they a SRH or a GT
 
 #### PLAYER IN GROUND STATS
 
