@@ -69,6 +69,8 @@ Addition of Fantasy articles
 
 ## DATA
 
+https://cricsheet.org/ has maintained matches data and ball by ball data of all IPL matches in yml format. These files have been taken and converted to CSV's. 
+The folder archive has all the data files we need - https://github.com/charanya78/fantasyer/tree/main/archive
 
 ## FRONT END DESIGN
 
