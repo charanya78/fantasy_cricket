@@ -34,11 +34,9 @@ The project aims to develop a fantasy helper application – to provide stats of
 ## FRONT END DESIGN
 
 
-- DEPLOYMENT
+## DEPLOYMENT
 
-![alt text](https://github.com/charanya78/citi-tradex/blob/main/diagrams/features.jpg)
 
 ## EXECUTION 
 
-- REST API can be built as a SpringBootApplication on any IDE after configuring the ports, databases and url mappings. Swagger UI page can be used to check CRUD operations.
-- Angular UI (can be found on the feature branch frontend) can also be built after connecting to the REST API and other external services, ports and url mappings.
+
