@@ -47,11 +47,19 @@ One of the most important factors to consider is the toss, especially in a t20 g
 
 #### PLAYER VS OPPOSITION STATS
 
+
 #### PLAYER VS TEAM STATS
 
 
 ## FEATURES TO BE DONE
 
+Future enhancements
+- Batter records vs bowling type(LAP/RAP/SLA etc) in different phases
+- Bowler vs RHB/LHB in different phases
+
+Addition of Fantasy articles
+- Articles on batter, bowler and team form
+- Other matchups that might help
 
 ## DATA
 
