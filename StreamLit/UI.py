@@ -3,6 +3,7 @@
 """
 import streamlit as st
 import pandas as pd
+import numpy as np 
 import os
 
 def RemoveDuplicate(listToRemoveDuplicates):
@@ -24,7 +25,6 @@ def TossTab(matchDataFrame):
     #Removin duplicates
     seasonList = RemoveDuplicate(seasonList)
     
-    st.markdown(os.getcwd())
     ##### Venue data calculation #####
     #st.dataframe(matchDataFrame)
     selectedVenue = st.selectbox('Venue',venueList)
@@ -100,30 +100,101 @@ def TossTab(matchDataFrame):
     st.markdown('Percentage of wins when '+ oppositionTeam + ' chose to bat: ' + str(round(bat_win_percentage,2)))
     st.markdown('Percentage of wins when '+ oppositionTeam + ' chose to bowl: ' + str(round(bowl_win_percentage,2)))
 
-def BatterInfo(matchDataFrame ,statsDataFrame):
-    #Get list of Venues
-    venueList = matchDataFrame['venue']
-    #Removing duplicates
-    venueList = RemoveDuplicate(venueList)
-
-    #Get list of batsmen
-    listOfBatsmen = statsDataFrame['batsman'] #TODO: To be updated based on selected team
+def BatterInfo(matchDataFrame, deliveriesDataFrame):
+    #Get batman list
+    batsmanList = deliveriesDataFrame['batter']
     #Remove duplicates
-    listOfBatsmen = RemoveDuplicate(listOfBatsmen)
+    batsmanList = RemoveDuplicate(batsmanList)
 
-    #Get list of teams
-    teamList = matchDataFrame['team1']
+    #Get city list
+    cityList = matchDataFrame["City"]
     #Remove duplicates
-    teamList = RemoveDuplicate(teamList)
+    cityList = RemoveDuplicate(cityList)
 
-    st.selectbox('Batsmen',listOfBatsmen,key='batter_venue')
-    st.selectbox('Venue',venueList,key='venue_batter')
-    st.dataframe([1,2,3]) #TODO: To be updated based on calculated data
+    selectedCity = st.selectbox('City', cityList)
 
-    st.selectbox('Batsmen',listOfBatsmen,key='batter_team')
-    st.selectbox('Opposition Team',teamList,key='team_batter')
-    st.dataframe([1,2,3]) #TODO: To be updated based on calculated data
+    venue_subset = matchDataFrame[matchDataFrame["City"] == selectedCity]
+    matchIdList = venue_subset["ID"].to_numpy()
 
+    selectedBatter = st.selectbox('Batsmen',batsmanList,key='batter_venue')
+    player_subset = deliveriesDataFrame[deliveriesDataFrame["batter"] == selectedBatter]
+
+    final_df = []
+    for i in range(len(player_subset)):
+        if player_subset.iat[i,0] in matchIdList:
+            final_df.append(player_subset.iloc[i])
+    final_df = pd.DataFrame(final_df)
+    # st.dataframe(final_df)
+
+    ##### Overall #####
+    total_runs = final_df["batsman_run"].sum()
+    
+    total_innings = len(pd.unique(final_df['ID']))
+    
+    total_outs = final_df[final_df["player_out"] == selectedBatter]
+    
+    average = total_runs / len(total_outs)
+    
+    strike_rate = total_runs / len(final_df) * 100
+    
+    dots = final_df[final_df["batsman_run"] == 0]
+    dot_percentage = len(dots)/len(final_df) * 100
+    
+    boundaries = final_df[final_df["batsman_run"] == 4]
+    sixes =  final_df[final_df["batsman_run"] == 6]
+    boundary_percentage = len(boundaries) + len(sixes) / len(final_df) * 100
+
+    overallData = [[round(total_runs,2), round(total_innings,2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+
+    ##### 1st innings #####
+    final_df_1 = final_df[final_df["innings"]==1]
+    total_runs = final_df_1["batsman_run"].sum()
+
+    total_innings = len(pd.unique(final_df_1['ID']))
+
+    total_outs = final_df_1[final_df_1["player_out"] == selectedBatter]
+
+    average = total_runs / len(total_outs)
+
+    strike_rate = total_runs / len(final_df_1) * 100
+
+    dots = final_df_1[final_df_1["batsman_run"] == 0]
+    dot_percentage = len(dots)/len(final_df_1) * 100
+
+    boundaries = final_df_1[final_df_1["batsman_run"] == 4]
+    sixes =  final_df_1[final_df_1["batsman_run"] == 6]
+    boundary_percentage = len(boundaries) + len(sixes) / len(final_df_1) * 100
+    
+    firstInningData = [[round(total_runs,2), round(total_innings,2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+
+    ##### 2nd innings #####
+    final_df_2 = final_df[final_df["innings"]==2]
+    total_runs = final_df_2["batsman_run"].sum()
+
+    total_innings = len(pd.unique(final_df_2['ID']))
+
+    total_outs = final_df_2[final_df_2["player_out"] == selectedBatter]
+
+    average = total_runs / len(total_outs)
+
+    strike_rate = total_runs / len(final_df_2) * 100
+
+    dots = final_df_2[final_df_2["batsman_run"] == 0]
+    dot_percentage = len(dots)/len(final_df_2) * 100
+
+    boundaries = final_df_2[final_df_2["batsman_run"] == 4]
+    sixes =  final_df_2[final_df_2["batsman_run"] == 6]
+    boundary_percentage = len(boundaries) + len(sixes) / len(final_df_2) * 100
+
+    secondInningData = [[round(total_runs,2), round(total_innings,2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+
+    data_to_display = overallData + firstInningData + secondInningData
+
+    data_to_display = pd.DataFrame(data_to_display, index=['Overall','1s Inning','2nd Inning'], columns=["Total runs", "Total innings", "Average", "Strike rate", "Dot %", "Boundary %"])
+
+    st.dataframe(data_to_display)
+
+    
 def BowlerInfo(matchDataFrame ,statsDataFrame):
     #Get list of Venues
     venueList = matchDataFrame['venue']
@@ -150,34 +221,37 @@ def BowlerInfo(matchDataFrame ,statsDataFrame):
 
 def BatterVsBowler(matchDataFrame ,statsDataFrame):
     #Get list of batsmen
-    listOfBatsmen = statsDataFrame['batsman'] #TODO: To be updated based on selected team
+    batsmanList = statsDataFrame['batsman'] #TODO: To be updated based on selected team
     #Remove duplicates
-    listOfBatsmen = RemoveDuplicate(listOfBatsmen)
+    batsmanList = RemoveDuplicate(batsmanList)
 
     #Get list of teams
     teamList = matchDataFrame['team1']
     #Remove duplicates
     teamList = RemoveDuplicate(teamList)
 
-    st.selectbox('Batsmen',listOfBatsmen,key='batter_bowler')
+    st.selectbox('Batsmen',batsmanList,key='batter_bowler')
     st.selectbox('Opposition Team',teamList,key='team_batter_bowler')
     st.dataframe([1,2,3]) #TODO: To be updated based on calculated data  
 
 currentPath = os.getcwd()
+
 dataPath = currentPath.replace(r'\StreamLit', r'\archive\IPL_Matches_2008_2022.csv')
 matchDataFrame = pd.read_csv(dataPath)
-#matchStatsDataFrame = pd.read_csv(r'C:\Users\<USER-NAME>\Desktop\fantasyer\archive\deliveries.csv')
+
+dataPath = currentPath.replace(r'\StreamLit', r'\archive\IPL_Ball_by_Ball_2008_2022.csv')
+ballByBallDataFrame = pd.read_csv(dataPath)
 
 tossTab, batterInfo, bowlerInfo, batterVsBowler = st.tabs(['Toss', 'BatterInfo', 'BowlerInfo', 'Batter vs Bowler'])
 
 with tossTab:
     TossTab(matchDataFrame)
 
-# with batterInfo:
-#     BatterInfo(matchDataFrame, matchStatsDataFrame)
+with batterInfo:
+    BatterInfo(matchDataFrame, ballByBallDataFrame)
 
 # with bowlerInfo:
-#     BowlerInfo(matchDataFrame, matchStatsDataFrame)
+#     BowlerInfo(matchDataFrame, ballByBallDataFrame)
 
 # with batterVsBowler:
-#     BatterVsBowler(matchDataFrame, matchStatsDataFrame)
+#     BatterVsBowler(matchDataFrame, ballByBallDataFrame)
