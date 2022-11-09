@@ -215,16 +215,18 @@ def BatterVsGround(matchDataFrame, deliveriesDataFrame):
 
             secondInningData = [[round(total_runs,2), round(total_innings,2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
 
-        data_to_display = overallData
+        data_to_display = [[]]
 
-        if(len(firstInningData) != 0):
+        if(any(overallData)):
+            data_to_display = overallData
+        if(any(firstInningData)):
             data_to_display = data_to_display + firstInningData
-        if(len(secondInningData) != 0):
+        if(any(secondInningData)):
             data_to_display = data_to_display + secondInningData
 
-        DF = pd.DataFrame(data_to_display, index=['Overall','1s Inning','2nd Inning'], columns=["Total runs", "Total innings", "Average", "Strike rate", "Dot %", "Boundary %"])
-
-        st.dataframe(DF)
+        if(any(data_to_display)):
+            DF = pd.DataFrame(data_to_display, index=['Overall','1s Inning','2nd Inning'], columns=["Total runs", "Total innings", "Average", "Strike rate", "Dot %", "Boundary %"])
+            st.dataframe(DF)
  
 def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
     #Get batman list
@@ -337,16 +339,18 @@ def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
             
             secondInningData = [[round(total_runs,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
 
-        data_to_display = overallData
+        data_to_display = [[]]
 
-        if(len(firstInningData) != 0):
+        if(any(overallData)):
+            data_to_display = overallData
+        if(any(firstInningData)):
             data_to_display = data_to_display + firstInningData
-        if(len(secondInningData) != 0):
+        if(any(secondInningData)):
             data_to_display = data_to_display + secondInningData
 
-        DF = pd.DataFrame(data_to_display, index=['Overall','1s Inning','2nd Inning'], columns=["Total runs", "Total outs", "Average", "Strike rate", "Economy"])
-
-        st.dataframe(DF)
+        if(any(data_to_display)):
+            DF = pd.DataFrame(data_to_display, index=['Overall','1s Inning','2nd Inning'], columns=["Total runs", "Total outs", "Average", "Strike rate", "Economy"])
+            st.dataframe(DF)
 
 def BatterVsOpposition(matchDataFrame ,deliveriesDataFrame):
     #Get list of batsmen
@@ -662,27 +666,149 @@ def BowlerVsOpposition(matchDataFrame, deliveriesDataFrame):
         DF = pd.DataFrame(data_to_display, index=['Overall','1s Inning','2nd Inning'], columns=["Total runs", "Total outs", "Average", "Strike rate", "Economy"])
         st.dataframe(DF)
 
+def BatterMatchups(deliveriesDataFrame, bowlerTeamData):
+    #Get list of batsmen
+    batterList = deliveriesDataFrame['batter']
+    #Remove duplicates
+    batterList = RemoveDuplicate(batterList)
+
+    selectedBatter = st.selectbox('Batter',batterList,key='batter_matchup')
+    player_subset = deliveriesDataFrame[deliveriesDataFrame["batter"] == selectedBatter]
+
+     #Get list of teams
+    teamList = bowlerTeamData['Team']
+    #Remove duplicates
+    teamList = RemoveDuplicate(teamList)
+
+    selectedTeam = st.selectbox('Team', teamList, key ='batter_mathcup_team')
+
+    bowler_subset = bowlerTeamData[bowlerTeamData["Team"] == selectedTeam]
+    bowler_subset = bowler_subset["Bowlers"].to_numpy()
+    
+    for bowler in bowler_subset:
+        st.markdown(selectedBatter + " vs " + bowler)        
+        
+        temp = player_subset[player_subset["bowler"] == bowler]
+        
+        if len(temp)==0:
+            st.markdown("Not yet faced")
+            
+        else:
+            total_runs = temp["batsman_run"].sum()
+            st.markdown("Total runs: \t"+str(total_runs))
+
+            total_innings = len(pd.unique(temp['ID']))
+            st.markdown("Total innings: \t"+str(total_innings) )
+
+            total_outs = temp[temp["player_out"] == selectedBatter]
+            st.markdown("Total outs: \t"+str(len(total_outs)))
+            
+            dots = temp[temp["batsman_run"] == 0]
+            dot_percentage = len(dots)/len(temp) * 100
+            st.markdown("Dot %: \t"+str(dot_percentage))
+
+            boundaries = temp[temp["batsman_run"] == 4]
+            sixes =  temp[temp["batsman_run"] == 6]
+            boundary_percentage = len(boundaries) + len(sixes) / len(temp) * 100
+            st.markdown("Boundary %: \t"+str(boundary_percentage))
+
+            if len(total_outs)==0:
+                st.markdown("Avg :\tinf")
+            else:
+                average = total_runs / len(total_outs)
+                st.markdown("Average: \t"+str(average))
+
+            strike_rate = total_runs / len(temp) * 100
+            st.markdown("Strike rate: \t"+str(strike_rate))
+
+def BowlerMatchups(deliveriesDataFrame, batterTeamData):
+    #Get list of batsmen
+    bowlerList = deliveriesDataFrame['batter']
+    #Remove duplicates
+    bowlerList = RemoveDuplicate(bowlerList)
+
+    selectedBowler = st.selectbox('Batter',bowlerList,key='bowler_matchup')
+    player_subset = deliveriesDataFrame[deliveriesDataFrame["bowler"] == selectedBowler]
+
+     #Get list of teams
+    teamList = batterTeamData['Team']
+    #Remove duplicates
+    teamList = RemoveDuplicate(teamList)
+
+    selectedTeam = st.selectbox('Team', teamList, key ='bowler_mathcup_team')
+
+    batter_subset = batterTeamData[batterTeamData["Team"] == selectedTeam]
+    batter_subset = batter_subset["Batters"].to_numpy()
+
+    for batter in batter_subset:
+        st.markdown(selectedBowler + " vs " + batter)
+        
+        temp = player_subset[player_subset["batter"] == batter]
+        
+        if len(temp)==0:
+            st.markdown("Not yet faced")
+            
+        else:
+            extras_wides = temp[temp["extra_type"]=='wides'] 
+            extras_noballs =  temp[temp["extra_type"]=='noballs']
+            
+            total_innings = len(pd.unique(temp['ID']))
+            st.markdown("Total innings: \t"+str(total_innings))
+
+            total_runs = temp["batsman_run"].sum() + extras_wides["total_run"].sum() + extras_noballs["total_run"].sum()
+
+            total_outs = temp["player_out"].isnull().sum()
+            total_outs = len(temp)-total_outs
+            st.markdown("Total outs: \t"+str(total_outs))
+
+            if total_outs == 0:
+                st.markdown("Wicket not taken")
+                
+            else:
+                average = total_runs/total_outs
+                st.markdown("Average: \t"+str(average))
+                
+            if total_outs == 0:
+                st.markdown("Wicket not taken")
+            else:
+                strike_rate = len(temp)/ total_outs
+                st.markdown("Strike rate: \t"+str(strike_rate))
+
+            economy = total_runs / (len(temp)/6)
+            st.markdown("Economy: \t"+str(economy))
+
 currentPath = os.getcwd()
 
 dataPath = currentPath.replace(r'\StreamLit', r'\archive\IPL_Matches_2008_2022.csv')
 matchDataFrame = pd.read_csv(dataPath)
 
 dataPath = currentPath.replace(r'\StreamLit', r'\archive\IPL_Ball_by_Ball_2008_2022.csv')
-ballByBallDataFrame = pd.read_csv(dataPath)
+deliveriesDataFrame = pd.read_csv(dataPath)
 
-tossTab, batterVsGround, bowlerVsGround, batterVsOpposition, bowlerVsOpposition = st.tabs(['Toss', 'Batter vs Ground', 'Bowler vs Ground', 'Batter vs Opposition', 'Bowler vs Opposition'])
+dataPath = currentPath.replace(r'\StreamLit', r'\archive\batter_team_data(2022).xlsx')
+batterTeamData = pd.read_excel(dataPath)
+
+dataPath = currentPath.replace(r'\StreamLit', r'\archive\bowler_team_data(2022).xlsx')
+bowlerTeamData = pd.read_excel(dataPath)
+
+tossTab, batterVsGround, bowlerVsGround, batterVsOpposition, bowlerVsOpposition, batterMatchups, bowlerMatchups = st.tabs(['Toss', 'Batter vs Ground', 'Bowler vs Ground', 'Batter vs Opposition', 'Bowler vs Opposition', 'Batter Matchups', 'Bowler Matchups'])
 
 with tossTab:
     TossTab(matchDataFrame)
 
 with batterVsGround:
-    BatterVsGround(matchDataFrame, ballByBallDataFrame)
+    BatterVsGround(matchDataFrame, deliveriesDataFrame)
 
 with bowlerVsGround:
-    BowlerVsGround(matchDataFrame, ballByBallDataFrame)
+    BowlerVsGround(matchDataFrame, deliveriesDataFrame)
 
 with batterVsOpposition:
-    BatterVsOpposition(matchDataFrame, ballByBallDataFrame)
+    BatterVsOpposition(matchDataFrame, deliveriesDataFrame)
 
 with bowlerVsOpposition:
-    BowlerVsOpposition(matchDataFrame, ballByBallDataFrame)
+    BowlerVsOpposition(matchDataFrame, deliveriesDataFrame)
+
+with batterMatchups:
+    BatterMatchups(deliveriesDataFrame, bowlerTeamData)
+with bowlerMatchups:
+    BowlerMatchups(deliveriesDataFrame, batterTeamData)
