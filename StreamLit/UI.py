@@ -120,6 +120,10 @@ def BatterVsGround(matchDataFrame, deliveriesDataFrame):
     player_subset = deliveriesDataFrame[deliveriesDataFrame["batter"] == selectedBatter]
 
     final_df = []
+    overallData = [[]]
+    firstInningData = [[]]
+    secondInningData = [[]]
+
     for i in range(len(player_subset)):
         if player_subset.iat[i,0] in matchIdList:
             final_df.append(player_subset.iloc[i])
@@ -128,6 +132,8 @@ def BatterVsGround(matchDataFrame, deliveriesDataFrame):
 
     if(len(final_df) == 0):
         st.markdown("Player not played at ground")
+        overallData = [[0,0,0,0,0,0,0]]
+
     else:
         ##### Overall #####
         total_runs = final_df["batsman_run"].sum()
@@ -136,11 +142,12 @@ def BatterVsGround(matchDataFrame, deliveriesDataFrame):
         
         total_outs = final_df[final_df["player_out"] == selectedBatter]
         
-        average = 0
-        if(len(total_outs) == 0):
-            st.markdown("Player not yet dismissed at ground")
+        average = "inf"
+        if len(total_outs)==0:
+            average = "inf"
+
         else:
-            average = total_runs / len(total_outs)
+            average1 = total_runs / len(total_outs)
                     
         strike_rate = total_runs / len(final_df) * 100
         
@@ -151,15 +158,18 @@ def BatterVsGround(matchDataFrame, deliveriesDataFrame):
         sixes =  final_df[final_df["batsman_run"] == 6]
         boundary_percentage = len(boundaries) + len(sixes) / len(final_df) * 100
 
-        overallData = [[round(total_runs,2), round(total_innings,2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+        if(average1=="inf"):
+            overallData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), average, round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+        else:
+            overallData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), round(average1,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
 
         ##### 1st innings #####
-        firstInningData = [[]]
         
         final_df_1 = final_df[final_df["innings"]==1]
 
         if(len(final_df_1)==0):
             st.markdown("Player not played at ground in 1st innings")
+            firstInningData = [[0,0,0,0,0,0,0]]
         else:
             total_runs = final_df_1["batsman_run"].sum()
 
@@ -167,9 +177,9 @@ def BatterVsGround(matchDataFrame, deliveriesDataFrame):
 
             total_outs = final_df_1[final_df_1["player_out"] == selectedBatter]
 
-            average=0
-            if(len(total_outs)==0):
-                st.markdown("Player not yer dismissed at ground")
+            average1 = "inf"
+            if len(total_outs)==0:
+                average1 = "inf"
             else:
                 average = total_runs / len(total_outs)
 
@@ -182,15 +192,18 @@ def BatterVsGround(matchDataFrame, deliveriesDataFrame):
             sixes =  final_df_1[final_df_1["batsman_run"] == 6]
             boundary_percentage = len(boundaries) + len(sixes) / len(final_df_1) * 100
             
-            firstInningData = [[round(total_runs,2), round(total_innings,2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+            if(average1=="inf"):
+                firstInningData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), average1, round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+            else:
+                firstInningData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
 
         ##### 2nd innings #####
-        secondInningData = [[]]
 
         final_df_2 = final_df[final_df["innings"]==2]
 
         if(len(final_df_2)==0):
             st.markdown("Player not played at ground in 2nd innings")
+            secondInningData = [[0,0,0,0,0,0,0]]
 
         else:
             total_runs = final_df_2["batsman_run"].sum()
@@ -199,8 +212,9 @@ def BatterVsGround(matchDataFrame, deliveriesDataFrame):
 
             total_outs = final_df_2[final_df_2["player_out"] == selectedBatter]
 
-            if(len(total_outs) == 0):
-                st.markdown("Player not yer dismissed at ground")
+            average1 = "inf"
+            if len(total_outs)==0:
+                average1 = "inf"
             else:
                 average = total_runs / len(total_outs)
 
@@ -213,20 +227,23 @@ def BatterVsGround(matchDataFrame, deliveriesDataFrame):
             sixes =  final_df_2[final_df_2["batsman_run"] == 6]
             boundary_percentage = len(boundaries) + len(sixes) / len(final_df_2) * 100
 
-            secondInningData = [[round(total_runs,2), round(total_innings,2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+            if(average1=="inf"):
+                secondInningData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), average1, round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+            else:
+                secondInningData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
 
-        data_to_display = [[]]
+    data_to_display = [[]]
 
-        if(any(overallData)):
+    if(any(overallData)):
             data_to_display = overallData
-        if(any(firstInningData)):
+    if(any(firstInningData)):
             data_to_display = data_to_display + firstInningData
-        if(any(secondInningData)):
-            data_to_display = data_to_display + secondInningData
+    if(any(secondInningData)):
+        data_to_display = data_to_display + secondInningData
 
-        if(any(data_to_display)):
-            DF = pd.DataFrame(data_to_display, index=['Overall','1s Inning','2nd Inning'], columns=["Total runs", "Total innings", "Average", "Strike rate", "Dot %", "Boundary %"])
-            st.dataframe(DF)
+    if(any(data_to_display)):
+        DF = pd.DataFrame(data_to_display, index=['Overall','1st Innings','2nd Innings'], columns=["Total runs", "Total innings", "Total Outs","Average", "Strike rate", "Dot %", "Boundary %"])
+        st.dataframe(DF)
  
 def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
     #Get batman list
@@ -244,10 +261,14 @@ def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
     venue_subset = matchDataFrame[matchDataFrame["City"] == selectedCity]
     matchIdList = venue_subset["ID"].to_numpy()
 
-    selectedBowler = st.selectbox('Bowler',bowlerList,key='bowloer_venue')
+    selectedBowler = st.selectbox('Bowler',bowlerList,key='bowler_venue')
     player_subset = deliveriesDataFrame[deliveriesDataFrame["bowler"] == selectedBowler]
 
     final_df = []
+    overallData = [[]]
+    firstInningData = [[]]
+    secondInningData = [[]]
+
     for i in range(len(player_subset)):
         if player_subset.iat[i,0] in matchIdList:
             final_df.append(player_subset.iloc[i])
@@ -256,9 +277,9 @@ def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
 
     if(len(final_df) == 0):
         st.markdown("Player not played at ground")
+        overallData = [[0,0,0,0,0]]  
     else:
         ##### Overall #####
-        overallData = [[0,0,0,0,0,0,0]]
         extras_wides = final_df[final_df["extra_type"]=='wides'] 
         extras_noballs =  final_df[final_df["extra_type"]=='noballs']
         total_innings = len(pd.unique(final_df['ID']))
@@ -266,55 +287,55 @@ def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
         total_outs = final_df["player_out"].isnull().sum()
         total_outs = len(final_df)-total_outs
 
+        average = 0
+        strike_rate =0
         if(total_outs==0):
-            st.markdown("Player has not taken any wickets at the ground")
+            average = 0
+            strike_rate =0
         else:
             average = total_runs/total_outs
-            
             strike_rate = len(final_df)/ total_outs
 
         economy = total_runs / (len(final_df)/6)
-    
+
         overallData = [[round(total_runs,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
 
         ##### 1st innings #####
-        firstInningData = [[0,0,0,0,0,0,0]]
-        
+
         final_df_1 = final_df[final_df["innings"]==1]
 
         if(len(final_df_1)==0):
             st.markdown("Player not played at ground in 1st innings")
+            firstInningData = [[0,0,0,0,0]]  
         else:
             extras_wides = final_df_1[final_df_1["extra_type"]=='wides'] 
             extras_noballs =  final_df_1[final_df_1["extra_type"]=='noballs']
 
             # total_innings = len(pd.unique(final_df_1['ID']))
-
             total_runs = final_df_1["batsman_run"].sum() + extras_wides["total_run"].sum() + extras_noballs["total_run"].sum()
 
             total_outs = final_df_1["player_out"].isnull().sum()
             total_outs = len(final_df_1)-total_outs
-            
+                
+            average = 0
+            strike_rate =0
             if(total_outs==0):
-                st.markdown("Player has not taken any wickets at the ground")
+                average = 0
+                strike_rate =0
             else:
                 average = total_runs/total_outs
-                print(average)
-
                 strike_rate = len(final_df_1)/ total_outs
-                print(strike_rate)
 
-            economy = total_runs / (len(final_df_1)/6)
-            
+            economy = total_runs / (len(final_df_1)/6)     
             firstInningData = [[round(total_runs,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
 
         ##### 2nd innings #####
-        secondInningData = [[0,0,0,0,0,0,0]]
-        
+            
         final_df_2 = final_df[final_df["innings"]==2]
 
         if(len(final_df_2)==0):
             st.markdown("Player not played at ground in 1st innings")
+            secondInningData = [[0,0,0,0,0]]  
         else:
             extras_wides = final_df_2[final_df_2["extra_type"]=='wides'] 
             extras_noballs =  final_df_2[final_df_2["extra_type"]=='noballs']
@@ -325,32 +346,30 @@ def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
 
             total_outs = final_df_2["player_out"].isnull().sum()
             total_outs = len(final_df_2)-total_outs
-            
+                
+            average = 0
+            strike_rate =0
             if(total_outs==0):
-                st.markdown("Player has not taken any wickets at the ground")
+                average = 0
+                strike_rate =0
             else:
                 average = total_runs/total_outs
-                print(average)
-
                 strike_rate = len(final_df_2)/ total_outs
-                print(strike_rate)
-
             economy = total_runs / (len(final_df_2)/6)
-            
+                
             secondInningData = [[round(total_runs,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
 
-        data_to_display = [[]]
+    data_to_display = [[]]
 
-        if(any(overallData)):
-            data_to_display = overallData
-        if(any(firstInningData)):
-            data_to_display = data_to_display + firstInningData
-        if(any(secondInningData)):
-            data_to_display = data_to_display + secondInningData
-
-        if(any(data_to_display)):
-            DF = pd.DataFrame(data_to_display, index=['Overall','1s Inning','2nd Inning'], columns=["Total runs", "Total outs", "Average", "Strike rate", "Economy"])
-            st.dataframe(DF)
+    if(any(overallData)):
+        data_to_display = overallData
+    if(any(firstInningData)):
+        data_to_display = data_to_display + firstInningData
+    if(any(secondInningData)):
+        data_to_display = data_to_display + secondInningData
+    if(any(data_to_display)):
+        DF = pd.DataFrame(data_to_display, index=['Overall','1st Innings','2nd Innings'], columns=["Total runs conceded", "Total outs", "Average", "Strike rate", "Economy"])
+        st.dataframe(DF)
 
 def BatterVsOpposition(matchDataFrame ,deliveriesDataFrame):
     #Get list of batsmen
@@ -370,7 +389,7 @@ def BatterVsOpposition(matchDataFrame ,deliveriesDataFrame):
     #Remove duplicates
     teamList2 = RemoveDuplicate(teamList2)
 
-    selectedTeam1 = st.selectbox('Team 1', teamList1,key='batter_opposition_team1')
+    selectedTeam1 = st.selectbox('Team', teamList1,key='batter_opposition_team1')
     # selectedTeam2 = st.selectbox('Team 2', teamList2,key='batter_opposition_team2')
 
     team_subset1 = matchDataFrame[matchDataFrame["Team2"] == selectedTeam1] 
@@ -403,9 +422,9 @@ def BatterVsOpposition(matchDataFrame ,deliveriesDataFrame):
 
         total_outs = final_df[final_df["player_out"] == selectedBatsman]
 
-        average = 0
+        average1 = "inf"
         if(len(total_outs)==0):
-            average = "inf"
+            average1 = "inf"
         
         else:
             average = total_runs / len(total_outs)
@@ -419,13 +438,14 @@ def BatterVsOpposition(matchDataFrame ,deliveriesDataFrame):
         sixes =  final_df[final_df["batsman_run"] == 6]
         boundary_percentage = len(boundaries) + len(sixes) / len(final_df) * 100
 
-        if(average=="inf"):
-            overallData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), "inf", round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+        if(average1=="inf"):
+            overallData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), average1, round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
         else:
             overallData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
 
     else:
-        st.markdown("Player not played at ground")
+        st.markdown("Player not played vs opposition")
+        overallData = [[0,0,0,0,0,0,0]]
         hasPlayedInGround = False
 
     #First Innings
@@ -442,9 +462,9 @@ def BatterVsOpposition(matchDataFrame ,deliveriesDataFrame):
 
         total_outs = final_df_1[final_df_1["player_out"] == selectedBatsman]
 
-        average=0
-        if len(total_outs)==0:
-            average = "inf"
+        average1 = "inf"
+        if(len(total_outs)==0):
+            average1 = "inf"
 
         else:
             average = total_runs / len(total_outs)
@@ -457,13 +477,14 @@ def BatterVsOpposition(matchDataFrame ,deliveriesDataFrame):
         sixes =  final_df_1[final_df_1["batsman_run"] == 6]
         boundary_percentage = len(boundaries) + len(sixes) / len(final_df_1) * 100
 
-        if(average=="inf"):
-            firstInningsData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), "inf", round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+        if(average1=="inf"):
+            firstInningsData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), average1, round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
         else:
             firstInningsData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
 
     else:
-            st.markdown("Player not played at ground in 1st innings")
+            st.markdown("Player not played vs opposition in 1st innings")
+            firstInningsData = [[0,0,0,0,0,0,0]]
         
     
     #2nd_innings
@@ -479,9 +500,9 @@ def BatterVsOpposition(matchDataFrame ,deliveriesDataFrame):
 
         total_outs = final_df_2[final_df_2["player_out"] == selectedBatsman]
 
-        average=0
-        if len(total_outs)==0:
-                average= "inf"
+        average1 = "inf"
+        if(len(total_outs)==0):
+            average1 = "inf"
 
         else:
             average = total_runs / len(total_outs)
@@ -495,12 +516,13 @@ def BatterVsOpposition(matchDataFrame ,deliveriesDataFrame):
         sixes =  final_df_2[final_df_2["batsman_run"] == 6]
         boundary_percentage = len(boundaries) + len(sixes) / len(final_df_2) * 100
 
-        if(average=="inf"):
-            secondInningsData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), "inf", round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
+        if(average1=="inf"):
+            secondInningsData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2),average1, round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
         else:
             secondInningsData = [[round(total_runs,2), round(total_innings,2), round(len(total_outs),2), round(average,2), round(strike_rate,2), round(dot_percentage,2), round(boundary_percentage,2)]]
     else:
-            st.markdown("Player not played at ground in 2nd innings")
+            st.markdown("Player not played vs opposition in 2nd innings")
+            secondInningsData = [[0,0,0,0,0,0,0]]
 
     data_to_display = [[]]  
 
@@ -512,7 +534,7 @@ def BatterVsOpposition(matchDataFrame ,deliveriesDataFrame):
         data_to_display = data_to_display + secondInningsData
 
     if(any(data_to_display)):
-        DF = pd.DataFrame(data_to_display, index=['Overall','1s Inning','2nd Inning'], columns=["Total runs", "Total innings", "Total outs", "Average", "Strike rate", "Dot %", "Boundary %"])
+        DF = pd.DataFrame(data_to_display, index=['Overall','1st Innings','2nd Innings'], columns=["Total runs", "Total innings", "Total outs", "Average", "Strike rate", "Dot %", "Boundary %"])
         st.dataframe(DF)
 
 def BowlerVsOpposition(matchDataFrame, deliveriesDataFrame):
@@ -533,7 +555,7 @@ def BowlerVsOpposition(matchDataFrame, deliveriesDataFrame):
     #Remove duplicates
     teamList2 = RemoveDuplicate(teamList2)
 
-    selectedTeam1 = st.selectbox('Team 1', teamList1,key='bowler_opposition_team1')
+    selectedTeam1 = st.selectbox('Team', teamList1,key='bowler_opposition_team1')
     # selectedTeam2 = st.selectbox('Team 2', teamList2,key='ba_opposition_team2')
 
     team_subset1 = matchDataFrame[matchDataFrame["Team2"] == selectedTeam1] 
@@ -569,20 +591,21 @@ def BowlerVsOpposition(matchDataFrame, deliveriesDataFrame):
         total_outs = len(final_df)-total_outs
         
         average = 0
+        strike_rate = 0
         if total_outs==0:
-            st.markdown("Player has not taken any wickets at the ground")
-        
+            average = 0
+            strike_rate = 0
         else:
             average = total_runs/total_outs
-
             strike_rate = len(final_df)/ total_outs
 
         economy = total_runs / (len(final_df)/6)
 
-        overallData = [[round(total_innings,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
+        overallData = [[round(total_runs,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
 
     else:
-        st.markdown("Player not played at ground")
+        st.markdown("Player not played vs opposition")
+        overallData = [[0,0,0,0,0]]
         hasPlayedInGround = False
 
     ##### 1st innings #####
@@ -604,20 +627,21 @@ def BowlerVsOpposition(matchDataFrame, deliveriesDataFrame):
         total_outs = len(final_df_1)-total_outs
         
         average = 0
+        strike_rate = 0
         if total_outs==0:
-            st.markdown("Player has not taken any wickets at the ground in 1st innings")
-
+            average = 0
+            strike_rate = 0
         else:
             average = total_runs/total_outs
-
             strike_rate = len(final_df_1)/ total_outs
 
         economy = total_runs / (len(final_df_1)/6)
 
-        firstInningData = [[round(total_innings,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
+        firstInningData = [[round(total_runs,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
         
     else:
-            st.markdown("Player not played at ground in 1st innings")    
+            st.markdown("Player not played vs opposition in 1st innings") 
+            firstInningData = [[0,0,0,0,0]]   
 
     ##### 2nd innings #####
     secondInningData = [[]]
@@ -638,20 +662,22 @@ def BowlerVsOpposition(matchDataFrame, deliveriesDataFrame):
         total_outs = final_df_2["player_out"].isnull().sum()
         total_outs = len(final_df_2)-total_outs
         
+        average = 0
+        strike_rate = 0
         if total_outs==0:
-            st.markdown("Player has not taken any wickets at the ground in 2nd innings")
-
+            average = 0
+            strike_rate = 0
         else:
             average = total_runs/total_outs
-           
-        strike_rate = len(final_df_2)/ total_outs
+            strike_rate = len(final_df_2)/ total_outs
         
         economy = total_runs / (len(final_df_2)/6)
         
         secondInningData = [[round(total_runs,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
 
     else:
-            st.markdown("Player not played at ground in 2nd innings")
+            st.markdown("Player not played vs opposition in 2nd innings")
+            secondInningData= [[0,0,0,0,0]]  
     
     data_to_display = [[]]
 
@@ -663,7 +689,7 @@ def BowlerVsOpposition(matchDataFrame, deliveriesDataFrame):
         data_to_display = data_to_display + secondInningData
 
     if(any(data_to_display)):
-        DF = pd.DataFrame(data_to_display, index=['Overall','1s Inning','2nd Inning'], columns=["Total runs", "Total outs", "Average", "Strike rate", "Economy"])
+        DF = pd.DataFrame(data_to_display, index=['Overall','1st Innings','2nd Innings'], columns=["Total runs conceded", "Total outs", "Average", "Strike rate", "Economy"])
         st.dataframe(DF)
 
 def BatterMatchups(deliveriesDataFrame, bowlerTeamData):
@@ -810,5 +836,6 @@ with bowlerVsOpposition:
 
 with batterMatchups:
     BatterMatchups(deliveriesDataFrame, bowlerTeamData)
+
 with bowlerMatchups:
     BowlerMatchups(deliveriesDataFrame, batterTeamData)
