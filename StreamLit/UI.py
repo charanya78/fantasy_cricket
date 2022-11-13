@@ -711,41 +711,53 @@ def BatterMatchups(deliveriesDataFrame, bowlerTeamData):
     bowler_subset = bowlerTeamData[bowlerTeamData["Team"] == selectedTeam]
     bowler_subset = bowler_subset["Bowlers"].to_numpy()
     
+    data_to_display = []
+
+    # st.markdown(selectedBatter)
+
     for bowler in bowler_subset:
-        st.markdown(selectedBatter + " vs " + bowler)        
+        # st.markdown(selectedBatter + " vs " + bowler)        
         
         temp = player_subset[player_subset["bowler"] == bowler]
         
         if len(temp)==0:
-            st.markdown("Not yet faced")
+            st.markdown(bowler + " - Not yet faced")
             
         else:
             total_runs = temp["batsman_run"].sum()
-            st.markdown("Total runs: \t"+str(total_runs))
+            # st.markdown("Total runs: \t"+str(total_runs))
 
             total_innings = len(pd.unique(temp['ID']))
-            st.markdown("Total innings: \t"+str(total_innings) )
+            # st.markdown("Total innings: \t"+str(total_innings) )
 
             total_outs = temp[temp["player_out"] == selectedBatter]
-            st.markdown("Total outs: \t"+str(len(total_outs)))
+            # st.markdown("Total outs: \t"+str(len(total_outs)))
             
             dots = temp[temp["batsman_run"] == 0]
             dot_percentage = len(dots)/len(temp) * 100
-            st.markdown("Dot %: \t"+str(dot_percentage))
+            # st.markdown("Dot %: \t"+str(dot_percentage))
 
             boundaries = temp[temp["batsman_run"] == 4]
             sixes =  temp[temp["batsman_run"] == 6]
             boundary_percentage = len(boundaries) + len(sixes) / len(temp) * 100
-            st.markdown("Boundary %: \t"+str(boundary_percentage))
+            # st.markdown("Boundary %: \t"+str(boundary_percentage))
 
-            if len(total_outs)==0:
-                st.markdown("Avg :\tinf")
-            else:
+            average = "inf"
+
+            if len(total_outs)!=0:
+                # st.markdown("Avg :\tinf")
                 average = total_runs / len(total_outs)
-                st.markdown("Average: \t"+str(average))
+            # else:
+            #     average = total_runs / len(total_outs)
+                # st.markdown("Average: \t"+str(average))
 
             strike_rate = total_runs / len(temp) * 100
-            st.markdown("Strike rate: \t"+str(strike_rate))
+            # st.markdown("Strike rate: \t"+str(strike_rate))
+
+            data_to_display.append([bowler, total_runs, total_innings, len(total_outs), dot_percentage, boundary_percentage, average, strike_rate])
+    
+    data_to_display = pd.DataFrame(data_to_display, columns=["Bowler name", "Total runs", "Total innings", "Total outs", "Dot %", "Boundary %", "Average", "Strike rate"])
+    st.dataframe(data_to_display)
 
 def BowlerMatchups(deliveriesDataFrame, batterTeamData):
     #Get list of batsmen
@@ -766,42 +778,53 @@ def BowlerMatchups(deliveriesDataFrame, batterTeamData):
     batter_subset = batterTeamData[batterTeamData["Team"] == selectedTeam]
     batter_subset = batter_subset["Batters"].to_numpy()
 
+    data_to_display = []
+
     for batter in batter_subset:
-        st.markdown(selectedBowler + " vs " + batter)
+        # st.markdown(selectedBowler + " vs " + batter)
         
         temp = player_subset[player_subset["batter"] == batter]
         
         if len(temp)==0:
-            st.markdown("Not yet faced")
+            st.markdown(batter + " - Not yet faced")
             
         else:
             extras_wides = temp[temp["extra_type"]=='wides'] 
             extras_noballs =  temp[temp["extra_type"]=='noballs']
             
             total_innings = len(pd.unique(temp['ID']))
-            st.markdown("Total innings: \t"+str(total_innings))
+            # st.markdown("Total innings: \t"+str(total_innings))
 
             total_runs = temp["batsman_run"].sum() + extras_wides["total_run"].sum() + extras_noballs["total_run"].sum()
 
             total_outs = temp["player_out"].isnull().sum()
             total_outs = len(temp)-total_outs
-            st.markdown("Total outs: \t"+str(total_outs))
+            # st.markdown("Total outs: \t"+str(total_outs))
 
-            if total_outs == 0:
-                st.markdown("Wicket not taken")
-                
-            else:
+            average = 0
+            if total_outs != 0:
+                # st.markdown("Wicket not taken")
                 average = total_runs/total_outs
-                st.markdown("Average: \t"+str(average))
-                
-            if total_outs == 0:
-                st.markdown("Wicket not taken")
-            else:
+            # else:
+            #     average = total_runs/total_outs
+                # st.markdown("Average: \t"+str(average))
+            
+            strike_rate = 0
+
+            if total_outs != 0:
+                # st.markdown("Wicket not taken")
                 strike_rate = len(temp)/ total_outs
-                st.markdown("Strike rate: \t"+str(strike_rate))
+            # else:
+            #     strike_rate = len(temp)/ total_outs
+                # st.markdown("Strike rate: \t"+str(strike_rate))
 
             economy = total_runs / (len(temp)/6)
-            st.markdown("Economy: \t"+str(economy))
+            # st.markdown("Economy: \t"+str(economy))
+
+        data_to_display.append([batter, total_innings, total_outs, average, strike_rate, economy])
+    
+    data_to_display = pd.DataFrame(data_to_display, columns=["Batter name", "Total innings", "Total outs", "Average", "Strike rate", "Economy"])
+    st.dataframe(data_to_display)        
 
 currentPath = os.getcwd()
 
