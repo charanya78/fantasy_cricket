@@ -275,14 +275,10 @@ def BatterVsGround(matchDataFrame, deliveriesDataFrame):
         st.dataframe(DF)
  
 def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
-    #Get batman list
     bowlerList = deliveriesDataFrame['bowler']
-    #Remove duplicates
     bowlerList = RemoveDuplicate(bowlerList)
 
-    #Get city list
     cityList = matchDataFrame["City"]
-    #Remove duplicates
     cityList = RemoveDuplicate(cityList)
 
     selectedCity = st.selectbox('City', cityList, key='City_bowler')
@@ -297,23 +293,22 @@ def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
     overallData = [[]]
     firstInningData = [[]]
     secondInningData = [[]]
+    hasPlayedBefore = False
 
     for i in range(len(player_subset)):
         if player_subset.iat[i,0] in matchIdList:
             final_df.append(player_subset.iloc[i])
     final_df = pd.DataFrame(final_df)
-    # st.dataframe(final_df)
 
     if(len(final_df) == 0):
         st.markdown("Player not played at ground")
         overallData = [[0,0,0,0,0]]  
     else:
-        ##### Overall #####
+        hasPlayedBefore = True
         extras_wides = final_df[final_df["extra_type"]=='wides'] 
         extras_noballs =  final_df[final_df["extra_type"]=='noballs']
-        total_innings = len(pd.unique(final_df['ID']))
         total_runs = final_df["batsman_run"].sum() + extras_wides["total_run"].sum() + extras_noballs["total_run"].sum()
-        total_outs = final_df["player_out"].isnull().sum()
+        total_outs = len(final_df[final_df["player_out"]=="NA"])
         total_outs = len(final_df)-total_outs
 
         average = 0
@@ -327,9 +322,11 @@ def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
 
         economy = total_runs / (len(final_df)/6)
 
-        overallData = [[round(total_runs,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
+        overallData = [[total_runs, total_outs, average, strike_rate, economy]]
 
         ##### 1st innings #####
+
+    if hasPlayedBefore == True:
 
         final_df_1 = final_df[final_df["innings"]==1]
 
@@ -343,7 +340,7 @@ def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
             # total_innings = len(pd.unique(final_df_1['ID']))
             total_runs = final_df_1["batsman_run"].sum() + extras_wides["total_run"].sum() + extras_noballs["total_run"].sum()
 
-            total_outs = final_df_1["player_out"].isnull().sum()
+            total_outs = len(final_df_1[final_df_1["player_out"]=="NA"])
             total_outs = len(final_df_1)-total_outs
                 
             average = 0
@@ -356,9 +353,11 @@ def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
                 strike_rate = len(final_df_1)/ total_outs
 
             economy = total_runs / (len(final_df_1)/6)     
-            firstInningData = [[round(total_runs,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
+            firstInningData = [[total_runs, total_outs, average, strike_rate, economy]]
 
         ##### 2nd innings #####
+
+    if hasPlayedBefore == True:
             
         final_df_2 = final_df[final_df["innings"]==2]
 
@@ -373,7 +372,7 @@ def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
 
             total_runs = final_df_2["batsman_run"].sum() + extras_wides["total_run"].sum() + extras_noballs["total_run"].sum()
 
-            total_outs = final_df_2["player_out"].isnull().sum()
+            total_outs = len(final_df_2[final_df_2["player_out"]=="NA"])
             total_outs = len(final_df_2)-total_outs
                 
             average = 0
@@ -386,7 +385,7 @@ def BowlerVsGround(matchDataFrame, deliveriesDataFrame):
                 strike_rate = len(final_df_2)/ total_outs
             economy = total_runs / (len(final_df_2)/6)
                 
-            secondInningData = [[round(total_runs,2), round(total_outs,2), round(average,2), round(strike_rate,2), round(economy,2)]]
+            secondInningData = [[total_runs, total_outs, average, strike_rate, economy]]
 
     data_to_display = [[]]
 
@@ -619,7 +618,7 @@ def BowlerVsOpposition(matchDataFrame, deliveriesDataFrame):
 
         total_runs = final_df["batsman_run"].sum() + extras_wides["total_run"].sum() + extras_noballs["total_run"].sum()
 
-        total_outs = final_df["player_out"].isnull().sum()
+        total_outs = len(final_df[final_df["player_out"]=="NA"])
         total_outs = len(final_df)-total_outs
         
         average = 0
@@ -655,7 +654,7 @@ def BowlerVsOpposition(matchDataFrame, deliveriesDataFrame):
 
         total_runs = final_df_1["batsman_run"].sum() + extras_wides["total_run"].sum() + extras_noballs["total_run"].sum()
 
-        total_outs = final_df_1["player_out"].isnull().sum()
+        total_outs = len(final_df_1[final_df_1["player_out"]=="NA"])
         total_outs = len(final_df_1)-total_outs
         
         average = 0
@@ -691,7 +690,7 @@ def BowlerVsOpposition(matchDataFrame, deliveriesDataFrame):
         
         total_runs = final_df_2["batsman_run"].sum() + extras_wides["total_run"].sum() + extras_noballs["total_run"].sum()
         
-        total_outs = final_df_2["player_out"].isnull().sum()
+        total_outs = len(final_df_2[final_df_2["player_out"]=="NA"])
         total_outs = len(final_df_2)-total_outs
         
         average = 0
@@ -731,11 +730,7 @@ def BatterMatchups(matchDataFrame, deliveriesDataFrame):
     selectedBatter = st.selectbox('Batter',batterList,key='batter_matchup')
     player_subset = deliveriesDataFrame[deliveriesDataFrame["batter"] == selectedBatter]
 
-    teamList1 = matchDataFrame["Team1"]
-    teamList1 = RemoveDuplicate(teamList1)
-
-    teamList2 = matchDataFrame["Team2"]
-    teamList2 = RemoveDuplicate(teamList2)
+    teamList1 = ("Rajasthan Royals","Royal Challengers Bangalore","Kolkata Knight Riders","Mumbai Indians","Gujarat Titans","Lucknow Super Giants","Sunrisers Hyderabad","Punjab Kings","Delhi Capitals","Chennai Super Kings")
 
     selectedTeam = st.selectbox('Team', teamList1, key ='batter_mathcup_team')
 
@@ -785,12 +780,7 @@ def BowlerMatchups(matchDataFrame, deliveriesDataFrame):
     selectedBowler = st.selectbox('Bowler',bowlerList,key='bowler_matchup')
     player_subset = deliveriesDataFrame[deliveriesDataFrame["bowler"] == selectedBowler]
 
-    teamList1 = matchDataFrame["Team1"]
-    teamList1 = RemoveDuplicate(teamList1)
-
-    teamList2 = matchDataFrame["Team2"]
-    teamList2 = RemoveDuplicate(teamList2)
-
+    teamList1 = ("Rajasthan Royals","Royal Challengers Bangalore","Kolkata Knight Riders","Mumbai Indians","Gujarat Titans","Lucknow Super Giants","Sunrisers Hyderabad","Punjab Kings","Delhi Capitals","Chennai Super Kings")
     selectedTeam = st.selectbox('Team', teamList1, key ='bowler_mathcup_team')
 
     data_to_display = []
@@ -812,7 +802,7 @@ def BowlerMatchups(matchDataFrame, deliveriesDataFrame):
 
             total_runs = temp["batsman_run"].sum() + extras_wides["total_run"].sum() + extras_noballs["total_run"].sum()
 
-            total_outs = temp["player_out"].isnull().sum()
+            total_outs = len(temp[temp["player_out"]=="NA"])
             total_outs = len(temp)-total_outs
 
             average = 0
