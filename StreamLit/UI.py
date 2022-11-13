@@ -5,6 +5,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np 
 import os
+from gsheetsdb import connect
 
 def RemoveDuplicate(listToRemoveDuplicates):
     return list(set(listToRemoveDuplicates))
@@ -708,7 +709,7 @@ def BatterMatchups(deliveriesDataFrame, bowlerTeamData):
     player_subset = deliveriesDataFrame[deliveriesDataFrame["batter"] == selectedBatter]
 
      #Get list of teams
-    teamList = bowlerTeamData['Team']
+    teamList = bowlerTeamData["Team"]
     #Remove duplicates
     teamList = RemoveDuplicate(teamList)
 
@@ -769,7 +770,7 @@ def BowlerMatchups(deliveriesDataFrame, batterTeamData):
     player_subset = deliveriesDataFrame[deliveriesDataFrame["bowler"] == selectedBowler]
 
      #Get list of teams
-    teamList = batterTeamData['Team']
+    teamList = batterTeamData["Team"]
     #Remove duplicates
     teamList = RemoveDuplicate(teamList)
 
@@ -810,19 +811,26 @@ def BowlerMatchups(deliveriesDataFrame, batterTeamData):
     data_to_display = pd.DataFrame(data_to_display, columns=["Batter name", "Total innings", "Total wickets", "Average", "Strike rate", "Economy"])
     st.dataframe(data_to_display)        
 
-currentPath = os.getcwd()
 
-dataPath = currentPath.replace(r'\StreamLit', r'\archive\IPL_Matches_2008_2022.csv')
-matchDataFrame = pd.read_csv(dataPath)
+gsheet_url = "https://docs.google.com/spreadsheets/d/10fTSYVS2093KuXNKC4NTJJry_7aWbQrf5mH1qzDkD0E/edit?usp=sharing"
+conn = connect()
+rows = conn.execute(f'SELECT * FROM "{gsheet_url}"')
+matchDataFrame = pd.DataFrame(rows)
 
-dataPath = currentPath.replace(r'\StreamLit', r'\archive\IPL_Ball_by_Ball_2008_2022.csv')
-deliveriesDataFrame = pd.read_csv(dataPath)
+gsheet_url1 = "https://docs.google.com/spreadsheets/d/1tD0tvNHexMWQyDk0oWXOdkHTsYpKK_ptrZMeme927gw/edit?usp=sharing"
+conn = connect()
+rows1 = conn.execute(f'SELECT * FROM "{gsheet_url1}"')
+deliveriesDataFrame = pd.DataFrame(rows1)
 
-dataPath = currentPath.replace(r'\StreamLit', r'\archive\batter_team_data(2022).xlsx')
-batterTeamData = pd.read_excel(dataPath)
+gsheet_url2 = "https://docs.google.com/spreadsheets/d/1iQLFj6wo1U97lNK54aOeXx39e9YBMoy9bz0p5f-t6B4/edit?usp=sharing"
+conn = connect()
+rows2 = conn.execute(f'SELECT * FROM "{gsheet_url2}"')
+batterTeamData = pd.DataFrame(rows2)
 
-dataPath = currentPath.replace(r'\StreamLit', r'\archive\bowler_team_data(2022).xlsx')
-bowlerTeamData = pd.read_excel(dataPath)
+gsheet_url3 = "https://docs.google.com/spreadsheets/d/17Tiechfb5isSH7C-rU1Mt0J5MhVuPOisd6Bkjce9bak/edit?usp=sharing"
+conn = connect()
+rows3 = conn.execute(f'SELECT * FROM "{gsheet_url3}"')
+bowlerTeamData = pd.DataFrame(rows3)
 
 tossTab, batterVsGround, bowlerVsGround, batterVsOpposition, bowlerVsOpposition, batterMatchups, bowlerMatchups = st.tabs(['Toss', 'Batter vs Ground', 'Bowler vs Ground', 'Batter vs Opposition', 'Bowler vs Opposition', 'Batter Matchups', 'Bowler Matchups'])
 
