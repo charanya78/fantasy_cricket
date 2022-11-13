@@ -725,29 +725,20 @@ def BowlerVsOpposition(matchDataFrame, deliveriesDataFrame):
         st.dataframe(DF)
 
 def BatterMatchups(matchDataFrame, deliveriesDataFrame):
-    #Get list of batsmen
     batterList = deliveriesDataFrame['batter']
-    #Remove duplicates
     batterList = RemoveDuplicate(batterList)
 
     selectedBatter = st.selectbox('Batter',batterList,key='batter_matchup')
     player_subset = deliveriesDataFrame[deliveriesDataFrame["batter"] == selectedBatter]
 
-    #Get list of teams
     teamList1 = matchDataFrame["Team1"]
-    #Remove duplicates
     teamList1 = RemoveDuplicate(teamList1)
 
-    #Get list of teams
     teamList2 = matchDataFrame["Team2"]
-    #Remove duplicates
     teamList2 = RemoveDuplicate(teamList2)
 
     selectedTeam = st.selectbox('Team', teamList1, key ='batter_mathcup_team')
 
-    # bowler_subset = bowlerTeamData[bowlerTeamData["Team"] == selectedTeam]
-    # bowler_subset = bowler_subset["Bowlers"].to_numpy()
-    
     data_to_display = []
 
     bowlerList = GetPlayerList(matchDataFrame,deliveriesDataFrame,selectedTeam,'bowler',2022)
@@ -773,43 +764,34 @@ def BatterMatchups(matchDataFrame, deliveriesDataFrame):
             sixes =  temp[temp["batsman_run"] == 6]
             boundary_percentage = len(boundaries) + len(sixes) / len(temp) * 100
 
-            average1 = 0
-            average=0
-
+            average = 0
             if(len(total_outs)==0):
-                average = "inf"
+                average= "inf"
             else:
                 average = total_runs / len(total_outs)
-                strike_rate = total_runs / len(temp) * 100
-
-            data_to_display.append([bowler, total_runs, total_innings, len(total_outs), dot_percentage, boundary_percentage, average, strike_rate])
+            
+            strike_rate = total_runs / len(temp) * 100
     
-    data_to_display = pd.DataFrame(data_to_display, columns=["Bowler name", "Total runs", "Total innings", "Total outs", "Dot %", "Boundary %", "Average", "Strike rate"])
+            data_to_display.append([bowler, total_runs, total_innings, len(total_outs), str(average), strike_rate, dot_percentage, boundary_percentage])
+    
+    data_to_display = pd.DataFrame(data_to_display, columns=["Bowler name", "Total runs", "Total innings", "Total outs", "Average", "Strike rate","Dot %", "Boundary %"])
     st.dataframe(data_to_display)
 
 def BowlerMatchups(matchDataFrame, deliveriesDataFrame):
-    #Get list of bowler
     bowlerList = deliveriesDataFrame['bowler']
-    #Remove duplicates
+
     bowlerList = RemoveDuplicate(bowlerList)
 
     selectedBowler = st.selectbox('Bowler',bowlerList,key='bowler_matchup')
     player_subset = deliveriesDataFrame[deliveriesDataFrame["bowler"] == selectedBowler]
 
-    #Get list of teams
     teamList1 = matchDataFrame["Team1"]
-    #Remove duplicates
     teamList1 = RemoveDuplicate(teamList1)
 
-    #Get list of teams
     teamList2 = matchDataFrame["Team2"]
-    #Remove duplicates
     teamList2 = RemoveDuplicate(teamList2)
 
     selectedTeam = st.selectbox('Team', teamList1, key ='bowler_mathcup_team')
-
-    # batter_subset = batterTeamData[batterTeamData["Team"] == selectedTeam]
-    # batter_subset = batter_subset["Batters"].to_numpy()
 
     data_to_display = []
 
@@ -852,16 +834,6 @@ def GetMatchData():
     rows = conn.execute(f'SELECT * FROM "{gsheet_url}"')
     matchDataFrame = pd.DataFrame(rows)
     return matchDataFrame
-
-    # gsheet_url2 = "https://docs.google.com/spreadsheets/d/1iQLFj6wo1U97lNK54aOeXx39e9YBMoy9bz0p5f-t6B4/edit?usp=sharing"
-    # conn = connect()
-    # rows2 = conn.execute(f'SELECT * FROM "{gsheet_url2}"')
-    # batterTeamData = pd.DataFrame(rows2)
-
-    # gsheet_url3 = "https://docs.google.com/spreadsheets/d/17Tiechfb5isSH7C-rU1Mt0J5MhVuPOisd6Bkjce9bak/edit?usp=sharing"
-    # conn = connect()
-    # rows3 = conn.execute(f'SELECT * FROM "{gsheet_url3}"')
-    # bowlerTeamData = pd.DataFrame(rows3)
 
 @st.cache
 def GetDeliveriesData():
