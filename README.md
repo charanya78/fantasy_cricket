@@ -81,7 +81,11 @@ Addition of Fantasy articles
 
 
 ## DEPLOYMENT
-
+- For deployment purposes, StreamLit was used.
+- A StreamLit account was created and the csv files used were pushed to Google sheets and their access was made public
+- Requirements.txt file was added
+- The app was configured in StreamLit and deployed
+- Live Link : https://charanya78-fantasyer-streamlitui-streamlit-4v9psj.streamlit.app/
 
 ## EXECUTION 
 - To run the app in your local system, install streamlit and the required dependencies - https://github.com/charanya78/fantasyer/blob/StreamLit/StreamLit/requirements.txt
