@@ -84,5 +84,7 @@ Addition of Fantasy articles
 
 
 ## EXECUTION 
-
+- To run the app in your local system, install streamlit and the required dependencies - https://github.com/charanya78/fantasyer/blob/StreamLit/StreamLit/requirements.txt
+- Navigate to StreamLit branch to the StreamLit folder
+- Use the command streamlit run UI.py to run the app
 
