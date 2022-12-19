@@ -83,8 +83,13 @@ Addition of Fantasy articles
 
 ## FRONT END DESIGN
 Streamlit is used for visualizing the project and each feature is categorized under separate tabs
+
+Example 1:
 ![image](https://user-images.githubusercontent.com/59957617/208448016-969292b9-9cab-424d-b199-b7b4e29d90f7.png)
+
+Example 2:
 ![image](https://user-images.githubusercontent.com/59957617/208448113-452423f3-4c17-4673-8f87-ac62cefa8722.png)
+
 The following functions from streamlit are majorly used:
 - <i>selectbox</i>  : To display drop down options
 ![image](https://user-images.githubusercontent.com/59957617/208449293-f38108e9-e09a-4b93-af22-c643ac644710.png)
