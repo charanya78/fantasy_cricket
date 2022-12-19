@@ -99,7 +99,7 @@ The following functions from streamlit are majorly used:
 - <i>markdown</i>   : To display text with formatting
 ![image](https://user-images.githubusercontent.com/59957617/208449387-6447d3c5-5e0f-47df-a3a9-62df11f32c1d.png)
 
-- <i>dataframe<i>   : To display dervied data in tabular format
+- <i>dataframe</i>   : To display dervied data in tabular format
 ![image](https://user-images.githubusercontent.com/59957617/208449504-19f85139-b00e-43a6-a450-d7c628302152.png)
 
 ## DEPLOYMENT
