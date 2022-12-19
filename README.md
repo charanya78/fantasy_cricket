@@ -78,7 +78,25 @@ Addition of Fantasy articles
 - The folder archive has all the data files we need - https://github.com/charanya78/fantasyer/tree/main/archive
 
 ## FRONT END DESIGN
+Streamlit is used for visualizing the project and each feature is categorized under separate tabs
 
+Example 1:
+
+![image](https://user-images.githubusercontent.com/59957617/208448016-969292b9-9cab-424d-b199-b7b4e29d90f7.png)
+
+Example 2:
+
+![image](https://user-images.githubusercontent.com/59957617/208448113-452423f3-4c17-4673-8f87-ac62cefa8722.png)
+
+The following functions from streamlit are majorly used:
+- <i>selectbox</i>  : To display drop down options
+![image](https://user-images.githubusercontent.com/59957617/208449293-f38108e9-e09a-4b93-af22-c643ac644710.png)
+
+- <i>markdown</i>   : To display text with formatting
+![image](https://user-images.githubusercontent.com/59957617/208449387-6447d3c5-5e0f-47df-a3a9-62df11f32c1d.png)
+
+- <i>dataframe</i>   : To display dervied data in tabular format
+![image](https://user-images.githubusercontent.com/59957617/208449504-19f85139-b00e-43a6-a450-d7c628302152.png)
 
 ## DEPLOYMENT
 - For deployment purposes, StreamLit was used.
