@@ -5,7 +5,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np 
 import os
-from gsheetsdb.db import connect
+from gsheetsdb import connect
 
 def RemoveDuplicate(listToRemoveDuplicates):
     return list(set(listToRemoveDuplicates))
