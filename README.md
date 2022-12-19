@@ -88,7 +88,7 @@ Addition of Fantasy articles
 
 - To deploy on streamlit, the csv files used were made public using Google sheets
 - The url to the sheets were added while configuring the streamlit deployment
-- ![image](https://user-images.githubusercontent.com/45849930/208444727-baca4f2d-e7b2-47ff-b8cd-569e1e3acd96.png)
+  ![image](https://user-images.githubusercontent.com/45849930/208444727-baca4f2d-e7b2-47ff-b8cd-569e1e3acd96.png)
 - The requirements.txt was added with all the dependenices and the app was hosted in streamlit
 
 ## EXECUTION 
